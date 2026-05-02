@@ -77,3 +77,15 @@ export type JwtPayload = {
   exp: number;
   iat: number;
 };
+
+export type UpdateProfilePayload = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+};
+
+export type UpdateProfileResponse = {
+  message: string;
+  affected: number;
+};

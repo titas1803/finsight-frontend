@@ -7,14 +7,15 @@ export const AuthUrls = {
 };
 
 export const TransactionUrls = {
-  CREATE: "new",
-  GETALL: "all",
-  GETSUMMARY: "summary",
-  FINDBYID: ":id",
-  FINDBYTYPEANDCATEGORY: ":type/by-category",
-  GETLASTDAYS: "last-days",
-  UPDATE: "update/:id",
-  DELETE: "delete/:id",
+  CREATE: "transactions/new",
+  GETALL: "transactions/all",
+  GETSUMMARY: "transactions/summary",
+  FINDBYID: (id: string) => `transactions/${id}`,
+  FINDBYTYPEANDCATEGORY: (type: TransactionType) =>
+    `transactions/${type}/by-category`,
+  GETLASTPERIOD: "transactions/last-days",
+  UPDATE: (id: string) => `transactions/update/${id}`,
+  DELETE: (id: string) => `transactions/delete/${id}`,
 };
 
 export type TransactionUrls =
@@ -83,3 +84,16 @@ export const UserRole = {
   USER: "USER",
 };
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
+
+export const UserUrls = {
+  UPDATE: "users/update",
+};
+
+export type UserUrls = (typeof UserUrls)[keyof typeof UserUrls];
+
+export const Insighturls = {
+  GETINSIGHT: "insights/",
+  GETINSIGHTBYCATEGORY: (category: Category) => `insights/category/${category}`,
+};
+
+export type Insighturls = (typeof Insighturls)[keyof typeof Insighturls];

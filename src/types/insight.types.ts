@@ -28,8 +28,3 @@ export type CategoryInsightResponse = {
   transactionCount: number;
   stats: InsightStats | null;
 };
-
-// Used by CategoryInsightPanel component
-export type CategoryInsightRequest = {
-  category: Category;
-};
