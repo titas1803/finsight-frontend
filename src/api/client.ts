@@ -3,11 +3,12 @@ import { TOKENS } from "../constants/common";
 import { RoutePaths } from "../constants/routes";
 import { isTokenExpired } from "../utils/jwt";
 import { AuthUrls } from "../constants/enums";
+import { type RefreshTokenResponse } from "../types/auth.types";
 
 const api = axios.create({
   baseURL: import.meta.env.FINSIGHT_API_URL,
   headers: {
-    "Content-Type": "aaplication/json",
+    "Content-Type": "application/json",
   },
 });
 
@@ -37,9 +38,12 @@ const flushQueue = (error: unknown, token: string | null = null) => {
 
 const fetchTokens = async (refreshToken: string) => {
   return await axios
-    .post(`${import.meta.env.FINSIGHT_API_URL}/${AuthUrls.REFRESHTOKEN}`, {
-      refreshToken,
-    })
+    .post<RefreshTokenResponse>(
+      `${import.meta.env.FINSIGHT_API_URL}/${AuthUrls.REFRESHTOKEN}`,
+      {
+        refreshToken,
+      },
+    )
     .then((response) => response.data);
 };
 
@@ -63,7 +67,7 @@ api.interceptors.request.use(async (config) => {
           flushQueue(null, data[TOKENS.ACCESS_TOKEN]);
           config.headers.Authorization = `Bearer ${data[TOKENS.ACCESS_TOKEN]}`;
         } catch (err) {
-          flushQueue(err);
+          flushQueue(err, null);
           clearSession();
           return Promise.reject(err);
         } finally {
@@ -93,18 +97,27 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
+    const isAuthRoute =
+      original.url?.includes(AuthUrls.LOGIN) ||
+      original.url?.includes(AuthUrls.REFRESHTOKEN) ||
+      original.url?.includes(AuthUrls.REGISTER);
+
+    if (isAuthRoute) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status !== 401 || original._retry) {
       return Promise.reject(error);
     }
 
     original._retry = true;
 
-    if (!isRefreshing) {
+    if (isRefreshing) {
       return new Promise((resolve, reject) => {
         pendingQueue.push({
           resolve: (token) => {
             if (original.headers) {
-              original.headers.Authorization = `Bearer ${token}`;
+              original.headers["Authorization"] = `Bearer ${token}`;
             }
             resolve(api(original));
           },
@@ -127,12 +140,13 @@ api.interceptors.response.use(
 
       flushQueue(null, data[TOKENS.ACCESS_TOKEN]);
 
-      if (original.headers)
-        original.headers.Authorization = `Bearer ${data[TOKENS.ACCESS_TOKEN]}`;
-
+      // Retry original request with new token
+      if (original.headers) {
+        original.headers["Authorization"] = `Bearer ${data.accessToken}`;
+      }
       return api(original);
     } catch (refreshError) {
-      flushQueue(refreshError);
+      flushQueue(refreshError, null);
       clearSession();
       return Promise.reject(refreshError);
     } finally {
