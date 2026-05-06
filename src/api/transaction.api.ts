@@ -38,10 +38,13 @@ export const getTransactionById = async (id: string) => {
   return data;
 };
 
-export const updateTransaction = async (
-  id: string,
-  payload: UpdateTransactionPayload,
-) => {
+export const updateTransaction = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: UpdateTransactionPayload;
+}) => {
   const { data } = await api.patch<UpdateTransactionResponse>(
     `/${TransactionUrls.UPDATE(id)}`,
     payload,
@@ -70,10 +73,16 @@ export const getByTypeAndCategory = async (
   type: TransactionType,
   category?: Category,
 ) => {
-  const { data } = await api.get(
-    `/${TransactionUrls.FINDBYTYPEANDCATEGORY(type)}`,
-    { params: category ? { category } : undefined },
-  );
+  const { data } = await api.get<
+    {
+      category: string;
+      total: number;
+      percentage: string;
+      count: number;
+    }[]
+  >(`/${TransactionUrls.FINDBYTYPEANDCATEGORY(type)}`, {
+    params: category ? { category } : undefined,
+  });
 
   return data;
 };

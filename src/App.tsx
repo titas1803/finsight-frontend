@@ -6,8 +6,11 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ToastComp } from "./components/Common/CommonToast/index.tsx";
 import { AuthProvider } from "./context/AuthContextProvider.tsx";
 import { Loading } from "./components/Common/Loading/index.tsx";
-import AuthLayout from "./components/Authlayout/index.tsx";
 
+const AuthLayout = lazy(() => import("./components/Authlayout/index.tsx"));
+const DashboardLayout = lazy(
+  () => import("./components/DashboardLayout/index.tsx"),
+);
 const LoginPage = lazy(() => import("./pages/login"));
 const RegisterPage = lazy(() => import("./pages/register"));
 const OverviewPage = lazy(() => import("./pages/overview"));
@@ -29,13 +32,15 @@ const App: React.FC = () => {
             </Route>
 
             <Route element={<ProtectedRoute />}>
-              <Route path={RoutePaths.OVERVIEW} element={<OverviewPage />} />
-              <Route
-                path={RoutePaths.TRANSACTIONS}
-                element={<TransactionsPage />}
-              />
-              <Route path={RoutePaths.INSIGHTS} element={<InsightsPage />} />
-              <Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
+              <Route element={<DashboardLayout />}>
+                <Route path={RoutePaths.OVERVIEW} element={<OverviewPage />} />
+                <Route
+                  path={RoutePaths.TRANSACTIONS}
+                  element={<TransactionsPage />}
+                />
+                <Route path={RoutePaths.INSIGHTS} element={<InsightsPage />} />
+                <Route path={RoutePaths.PROFILE} element={<ProfilePage />} />
+              </Route>
             </Route>
 
             <Route

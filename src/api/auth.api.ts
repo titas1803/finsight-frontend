@@ -5,6 +5,7 @@ import type {
   LoginPayload,
   LoginResponse,
   UpdatePasswordPayload,
+  User,
 } from "../types/auth.types";
 import api from "./client";
 
@@ -23,6 +24,13 @@ export const login = async (payload: LoginPayload) => {
 
 export const logout = async (): Promise<{ message: string }> => {
   const { data } = await api.post<{ message: string }>(`/${AuthUrls.LOGOUT}`);
+  return data;
+};
+
+export const getMe = async () => {
+  const { data } = await api.get<{ user: User }>(`/${AuthUrls.ME}`, {
+    withCredentials: true,
+  });
   return data;
 };
 

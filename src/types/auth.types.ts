@@ -14,8 +14,6 @@ export type User = {
 // What AuthContext stores
 export type AuthState = {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
 };
 
 // POST /auth/login request body
@@ -54,8 +52,6 @@ export type RefreshTokenPayload = {
 export type LoginResponse = {
   message: string;
   user: User;
-  accessToken: string;
-  refreshToken: string;
 };
 
 // POST /auth/register response

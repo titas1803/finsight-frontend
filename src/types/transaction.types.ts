@@ -18,7 +18,7 @@ export type Transaction = {
 
 // POST /transactions request body
 export type CreateTransactionPayload = {
-  amount: number;
+  amount: string;
   description?: string;
   category: Category;
   type: TransactionType;
@@ -28,7 +28,7 @@ export type CreateTransactionPayload = {
 
 // PATCH /transactions/:id request body — all fields optional
 export type UpdateTransactionPayload = {
-  amount?: number;
+  amount?: string;
   description?: string;
   category?: Category;
   type?: TransactionType;
@@ -48,6 +48,7 @@ export type TransactionFilters = {
   search?: string;
   sortBy?: "date" | "amount";
   order?: "ASC" | "DESC";
+  limit?: number;
 };
 
 // GET /transactions response

@@ -1,7 +1,8 @@
 import React from "react";
+import { TransactionForm } from "../../components/TransactionForm";
 
 const TransactionsPage: React.FC = () => {
-  return <h1 className="text-3xl">Transactions</h1>;
+  return <TransactionForm />;
 };
 
 export default TransactionsPage;

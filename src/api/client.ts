@@ -1,7 +1,5 @@
-import axios from "axios";
-import { TOKENS } from "../constants/common";
+import axios, { type InternalAxiosRequestConfig } from "axios";
 import { RoutePaths } from "../constants/routes";
-import { isTokenExpired } from "../utils/jwt";
 import { AuthUrls } from "../constants/enums";
 import { type RefreshTokenResponse } from "../types/auth.types";
 
@@ -10,13 +8,12 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // Refresh Queuse
 
 const clearSession = () => {
-  localStorage.removeItem(TOKENS.ACCESS_TOKEN);
-  localStorage.removeItem(TOKENS.REFRESH_TOKEN);
   localStorage.removeItem("user");
   window.location.href = RoutePaths.LOGIN;
 };
@@ -24,82 +21,47 @@ const clearSession = () => {
 let isRefreshing: boolean = false;
 
 let pendingQueue: {
-  resolve: (token: string) => void;
+  resolve: () => void;
   reject: (err: unknown) => void;
 }[] = [];
 
-const flushQueue = (error: unknown, token: string | null = null) => {
+const flushQueue = (error: unknown) => {
   pendingQueue.forEach(({ resolve, reject }) => {
     if (error) reject(error);
-    else if (token) resolve(token);
+    else resolve();
   });
   pendingQueue = [];
 };
 
-const fetchTokens = async (refreshToken: string) => {
-  return await axios
-    .post<RefreshTokenResponse>(
-      `${import.meta.env.FINSIGHT_API_URL}/${AuthUrls.REFRESHTOKEN}`,
-      {
-        refreshToken,
-      },
-    )
-    .then((response) => response.data);
+const fetchTokens = async () => {
+  return await axios.post<RefreshTokenResponse>(
+    `${import.meta.env.FINSIGHT_API_URL}/${AuthUrls.REFRESHTOKEN}`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
 };
 
-// Request Interceptor
-api.interceptors.request.use(async (config) => {
-  const accessToken = localStorage.getItem(TOKENS.ACCESS_TOKEN);
-  const refreshToken = localStorage.getItem(TOKENS.REFRESH_TOKEN);
-
-  if (accessToken) {
-    if (isTokenExpired(accessToken, 30) && refreshToken) {
-      if (!isRefreshing) {
-        isRefreshing = true;
-
-        try {
-          const data = await fetchTokens(refreshToken);
-          localStorage.setItem(TOKENS.ACCESS_TOKEN, data[TOKENS.ACCESS_TOKEN]);
-          localStorage.setItem(
-            TOKENS.REFRESH_TOKEN,
-            data[TOKENS.REFRESH_TOKEN],
-          );
-          flushQueue(null, data[TOKENS.ACCESS_TOKEN]);
-          config.headers.Authorization = `Bearer ${data[TOKENS.ACCESS_TOKEN]}`;
-        } catch (err) {
-          flushQueue(err, null);
-          clearSession();
-          return Promise.reject(err);
-        } finally {
-          isRefreshing = false;
-        }
-      } else {
-        return new Promise((resolve, reject) => {
-          pendingQueue.push({
-            resolve: (token) => {
-              config.headers.Authorization = `Bearer ${token}`;
-              resolve(config);
-            },
-            reject,
-          });
-        });
-      }
-    } else {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-  }
-  return config;
-});
+type RetryConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
 
 // Response Interceptor
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
-    const original = error.config;
+    const original = error.config as RetryConfig;
+
+    if (!original) {
+      return Promise.reject(error);
+    }
 
     const isAuthRoute =
       original.url?.includes(AuthUrls.LOGIN) ||
       original.url?.includes(AuthUrls.REFRESHTOKEN) ||
+      original.url?.includes(AuthUrls.ME) ||
       original.url?.includes(AuthUrls.REGISTER);
 
     if (isAuthRoute) {
@@ -115,12 +77,7 @@ api.interceptors.response.use(
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         pendingQueue.push({
-          resolve: (token) => {
-            if (original.headers) {
-              original.headers["Authorization"] = `Bearer ${token}`;
-            }
-            resolve(api(original));
-          },
+          resolve: () => resolve(api(original)),
           reject,
         });
       });
@@ -129,25 +86,16 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const refreshToken = localStorage.getItem(TOKENS.REFRESH_TOKEN);
+      await fetchTokens();
 
-      if (!refreshToken) throw new Error("No refresh token available");
+      flushQueue(null);
 
-      const data = await fetchTokens(refreshToken);
-
-      localStorage.setItem(TOKENS.ACCESS_TOKEN, data[TOKENS.ACCESS_TOKEN]);
-      localStorage.setItem(TOKENS.REFRESH_TOKEN, data[TOKENS.REFRESH_TOKEN]);
-
-      flushQueue(null, data[TOKENS.ACCESS_TOKEN]);
-
-      // Retry original request with new token
-      if (original.headers) {
-        original.headers["Authorization"] = `Bearer ${data.accessToken}`;
-      }
       return api(original);
     } catch (refreshError) {
-      flushQueue(refreshError, null);
+      flushQueue(refreshError);
+
       clearSession();
+
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

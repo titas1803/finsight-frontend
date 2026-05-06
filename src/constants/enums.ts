@@ -1,4 +1,5 @@
 export const AuthUrls = {
+  ME: "auth/me",
   REGISTER: "auth/register",
   LOGIN: "auth/login",
   LOGOUT: "auth/logout",
