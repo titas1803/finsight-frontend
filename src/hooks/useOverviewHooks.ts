@@ -7,11 +7,12 @@ import {
 } from "../api/transaction.api";
 import { getInsights } from "../api/insight.api";
 import { TransactionType } from "../constants/enums";
+import type { InsightPeriod } from "../types/insight.types";
 
 export const overviewKeys = {
   summary: ["transactions", "summary"] as const,
   recent: ["transactions", "list", "recent"] as const,
-  insight: ["insights", "week"] as const,
+  insight: (period: InsightPeriod) => ["insights", period] as const,
   byCategory: ["transactions", "byType", "expense"] as const,
   monthlyDays: ["transactions", "lastDays", "month"] as const,
 };
@@ -29,10 +30,10 @@ export const useRecentTransactions = () =>
       getAllTransactions({ sortBy: "date", order: "DESC", limit: 5 }),
   });
 
-export const useWeeklyInsight = () =>
+export const usePeriodicInsight = (period: InsightPeriod) =>
   useQuery({
-    queryKey: overviewKeys.insight,
-    queryFn: () => getInsights("week"),
+    queryKey: overviewKeys.insight(period),
+    queryFn: () => getInsights(period),
     staleTime: 1000 * 60 * 30,
   });
 

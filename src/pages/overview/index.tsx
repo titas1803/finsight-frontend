@@ -27,7 +27,7 @@ import {
   useSummary,
   useMonthlyTransactions,
   useExpenseByCategory,
-  useWeeklyInsight,
+  usePeriodicInsight,
   useRecentTransactions,
 } from "../../hooks/useOverviewHooks";
 import { RoutePaths } from "../../constants/routes";
@@ -39,7 +39,9 @@ import {
 } from "../../utils/format";
 import { cn } from "../../utils/cn";
 import { SummaryCard } from "../../components/OverviewComponents/SummaryCard";
-
+import type { InsightPeriod } from "../../types/insight.types";
+import { marked } from "marked";
+import parse from "html-react-parser";
 // ─── Color map ────────────────────────────────────────────────────────────────
 const CATEGORY_COLORS: Record<string, string> = {
   food: "#F59E0B",
@@ -61,40 +63,38 @@ function SkeletonBlock({ className }: { className?: string }) {
 }
 
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
-// function ChartTooltip({
-//   active = false,
-//   payload,
-//   label,
-// }: {
-//   active: boolean;
-//   payload: { name: string; color: string; value: number }[];
-//   label: string;
-// }) {
-//   if (!active || !payload?.length) return null;
-//   return (
-//     <div className="bg-surface border border-border rounded-lg p-3 shadow-xl text-xs space-y-1.5">
-//       <p className="text-text-muted font-medium mb-1">{label}</p>
-//       {payload.map((entry) => (
-//         <div key={entry.name} className="flex items-center gap-2">
-//           <span
-//             className="w-2 h-2 rounded-full"
-//             style={{ background: entry.color }}
-//           />
-//           <span className="text-text-muted capitalize">{entry.name}</span>
-//           <span className="text-text-primary font-semibold ml-auto pl-4">
-//             {formatCurrency(entry.value, true)}
-//           </span>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
+function ChartTooltip({
+  active = false,
+  payload,
+  label,
+}: {
+  active: boolean;
+  payload: { name: string; color: string; value: number }[];
+  label: string;
+}) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-surface border border-border rounded-lg p-3 shadow-xl text-xs space-y-1.5">
+      <p className="text-text-muted font-medium mb-1">{label}</p>
+      {payload.map((entry) => (
+        <div key={entry.name} className="flex items-center gap-2">
+          <span
+            className="w-2 h-2 rounded-full"
+            style={{ background: entry.color }}
+          />
+          <span className="text-text-muted capitalize">{entry.name}</span>
+          <span className="text-text-primary font-semibold ml-auto pl-4">
+            {formatCurrency(entry.value, true)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function OverviewPage() {
-  const [insightPeriod, setInsightPeriod] = useState<"week" | "month" | "year">(
-    "month",
-  );
+  const [insightPeriod, setInsightPeriod] = useState<InsightPeriod>("week");
 
   const { data: summary, isLoading: summaryLoading } = useSummary();
   const { data: monthly, isLoading: monthlyLoading } = useMonthlyTransactions();
@@ -104,7 +104,7 @@ export default function OverviewPage() {
     data: insights,
     isLoading: insightsLoading,
     refetch: refetchInsights,
-  } = useWeeklyInsight();
+  } = usePeriodicInsight(insightPeriod);
   const { data: recentTxns, isLoading: recentLoading } =
     useRecentTransactions();
 
@@ -213,7 +213,7 @@ export default function OverviewPage() {
               <BarChart data={monthly ?? []} barSize={8} barGap={3}>
                 <CartesianGrid vertical={false} stroke="#2A2D3E" />
                 <XAxis
-                  dataKey="month"
+                  dataKey="income"
                   tick={{ fill: "#64748B", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
@@ -225,10 +225,22 @@ export default function OverviewPage() {
                   tickFormatter={(v) => formatCurrency(v, true)}
                   width={52}
                 />
-                {/* <Tooltip
-                  content={<ChartTooltip payload={monthly}/>}
-                  cursor={{ fill: "rgba(255,255,255,0.03)" }}
-                /> */}
+                {monthly && (
+                  <Tooltip
+                    content={
+                      <ChartTooltip
+                        active
+                        label="tip"
+                        payload={monthly.map((monthData) => ({
+                          name: "expense",
+                          color: "#EF4444",
+                          value: monthData.expense,
+                        }))}
+                      />
+                    }
+                    cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                  />
+                )}
                 <Bar dataKey="income" fill="#22C55E" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="expense" fill="#EF4444" radius={[4, 4, 0, 0]} />
                 <Bar
@@ -457,9 +469,9 @@ export default function OverviewPage() {
               </div>
             ) : insights?.insight ? (
               <div className="space-y-4">
-                <p className="text-sm text-text-primary leading-relaxed whitespace-pre-line">
-                  {insights.insight}
-                </p>
+                <div className="text-sm text-text-primary leading-relaxed whitespace-pre-line">
+                  {parse(marked.parse(insights.insight) as string)}
+                </div>
                 {insights.stats && (
                   <div className="mt-4 pt-4 border-t border-border space-y-2">
                     <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">

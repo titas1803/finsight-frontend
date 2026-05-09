@@ -1,7 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { RoutePaths } from "../constants/routes";
 import { AuthUrls } from "../constants/enums";
-import { type RefreshTokenResponse } from "../types/auth.types";
 
 const api = axios.create({
   baseURL: import.meta.env.FINSIGHT_API_URL,
@@ -34,7 +33,7 @@ const flushQueue = (error: unknown) => {
 };
 
 const fetchTokens = async () => {
-  return await axios.post<RefreshTokenResponse>(
+  return await axios.post(
     `${import.meta.env.FINSIGHT_API_URL}/${AuthUrls.REFRESHTOKEN}`,
     {},
     {
@@ -61,7 +60,6 @@ api.interceptors.response.use(
     const isAuthRoute =
       original.url?.includes(AuthUrls.LOGIN) ||
       original.url?.includes(AuthUrls.REFRESHTOKEN) ||
-      original.url?.includes(AuthUrls.ME) ||
       original.url?.includes(AuthUrls.REGISTER);
 
     if (isAuthRoute) {

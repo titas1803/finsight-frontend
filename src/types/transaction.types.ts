@@ -7,7 +7,7 @@ import type {
 // Matches your TransactionEntity
 export type Transaction = {
   id: string;
-  amount: number;
+  amount: string;
   description?: string;
   category: Category;
   type: TransactionType;
