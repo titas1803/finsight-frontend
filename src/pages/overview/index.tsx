@@ -29,7 +29,7 @@ import {
   useExpenseByCategory,
   usePeriodicInsight,
   useRecentTransactions,
-} from "../../hooks/useOverviewHooks";
+} from "../../hooks/overviewHooks";
 import { RoutePaths } from "../../constants/routes";
 import { TransactionType } from "../../constants/enums";
 import {
@@ -404,7 +404,7 @@ export default function OverviewPage() {
                       )}
                     >
                       {isIncome ? "+" : "-"}
-                      {formatCurrency(txn.amount, true)}
+                      {txn.amount}
                     </span>
                   </div>
                 );

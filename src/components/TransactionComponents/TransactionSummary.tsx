@@ -23,7 +23,7 @@ export const SummaryStrip = ({
   }, [transactions]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-3">
+    <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
       {(
         [
           {
@@ -45,11 +45,11 @@ export const SummaryStrip = ({
       ).map(({ key, label, cfg }) => (
         <div
           key={key}
-          className={`flex @max-md:justify-center items-center gap-3 px-4 py-3 rounded-xl border ${cfg.dimBg} border-current/10`}
+          className={`flex justify-between @max-md:justify-center items-center gap-3 px-4 py-3 rounded-xl border ${cfg.dimBg} border-current/10 overflow-clip lg:w-[32.5%]`}
           style={{ borderColor: cfg.color + "20" }}
         >
           <cfg.Icon size={16} className={cfg.dimText} />
-          <div className="flex lg:block gap-2">
+          <div className="flex gap-2">
             <p className="text-xs text-[#64748B]">{label}</p>
             <p className={`text-sm font-bold tabular-nums ${cfg.dimText}`}>
               {formatCurrency(totals[key])}

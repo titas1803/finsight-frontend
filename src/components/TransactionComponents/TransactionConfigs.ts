@@ -13,6 +13,7 @@ import {
   Category,
   ExpenseCategory,
   IncomeCategory,
+  InvestmentCategory,
 } from "../../constants/enums";
 import type { TransactionFilters } from "../../types/transaction.types";
 
@@ -62,7 +63,7 @@ export const PAY_ICON: Record<PaymentModes, React.ElementType> = {
 export const TRANSACTION_TYPE_CATEGORIES = {
   [TransactionType.EXPENSE]: Object.values(ExpenseCategory),
   [TransactionType.INCOME]: Object.values(IncomeCategory),
-  [TransactionType.INVESTMENT]: Object.values(IncomeCategory),
+  [TransactionType.INVESTMENT]: Object.values(InvestmentCategory),
 };
 export const ALL_CATEGORIES = Object.values(Category);
 

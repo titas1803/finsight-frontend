@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { RoutePaths } from "../../../constants/routes";
-import { Menu } from "lucide-react";
 import { useAuth } from "../../../hooks/useAuth";
 
 const toSentenceCase = (string: string) => {
@@ -37,10 +36,7 @@ const formatDate = (): string =>
     year: "numeric",
   });
 
-type TopBarProps = {
-  onMenuClick: () => void;
-};
-export const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
+export const TopBar: React.FC = () => {
   const { user } = useAuth();
   const { pathname } = useLocation();
 
@@ -49,13 +45,6 @@ export const TopBar: React.FC<TopBarProps> = ({ onMenuClick }) => {
   return (
     <header className="h-16 bg-surface border-b border-border flex items-center px-6 shrink-0 sticky top-0 z-30">
       <div className="flex items-center gap-4 flex-1">
-        <button
-          onClick={onMenuClick}
-          className="lg:hidden p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-background transition-colors"
-        >
-          <Menu size={18} />
-        </button>
-
         <div>
           {isOverview && user ? (
             <>

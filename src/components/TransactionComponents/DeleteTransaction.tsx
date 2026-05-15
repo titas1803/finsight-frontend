@@ -2,34 +2,40 @@ import type { Transaction } from "../../types/transaction.types";
 import { AlertTriangle } from "lucide-react";
 import { TransactionType } from "../../constants/enums";
 import { TYPE_CFG, CAT_COLOR } from "./TransactionConfigs";
-import { capitalize, formatCurrency, formatDate } from "../../utils/format";
+import { capitalize, formatDate } from "../../utils/format";
+import { useDeleteTransaction } from "../../hooks/transactionHooks";
 
 type DeleteTransactionProps = {
   transaction: Transaction;
-  onConfirm: () => void;
-  onCancel: () => void;
-  isPending: boolean;
+  onComplete: () => void;
 };
 export const DeleteTransaction: React.FC<DeleteTransactionProps> = ({
-  isPending,
-  onConfirm,
-  onCancel,
   transaction,
+  onComplete,
 }) => {
   const cfg = TYPE_CFG[transaction.type];
   const catColor = CAT_COLOR[transaction.category] ?? "#64748B";
-  const signed =
+  const signedAmount =
     transaction.type === TransactionType.INCOME
-      ? `+${formatCurrency(transaction.amount)}`
+      ? `+₹${transaction.amount}`
       : transaction.type === TransactionType.INVESTMENT
-        ? formatCurrency(transaction.amount)
-        : `−${formatCurrency(transaction.amount)}`;
+        ? `₹${transaction.amount}`
+        : `–₹${transaction.amount}`;
+
+  const { mutate: deleteTransactionMutation, isPending } =
+    useDeleteTransaction();
+
+  const onConfirm = () => {
+    deleteTransactionMutation(transaction.id, {
+      onSuccess: () => onComplete(),
+    });
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onCancel}
+        onClick={onComplete}
       />
       <div className="relative bg-[#1A1D27] border border-[#2A2D3E] rounded-2xl p-6 w-full max-w-121 shadow-2xl">
         <div className="flex flex-col items-center text-center gap-4">
@@ -70,7 +76,7 @@ export const DeleteTransaction: React.FC<DeleteTransactionProps> = ({
                   className="text-sm font-bold tabular-nums"
                   style={{ color: cfg.color }}
                 >
-                  {signed}
+                  {signedAmount}
                 </span>
               </div>
               <div className="px-4 py-3.5 hidden sm:table-cell">
@@ -80,13 +86,13 @@ export const DeleteTransaction: React.FC<DeleteTransactionProps> = ({
               </div>
             </div>
             <p className="text-sm text-[#64748B] mt-1.5">
-              above transaction will be permanently removed. This cannot be
+              Above transaction will be permanently removed. This cannot be
               undone.
             </p>
           </div>
           <div className="flex gap-3 w-full pt-1">
             <button
-              onClick={onCancel}
+              onClick={onComplete}
               className="flex-1 py-2.5 rounded-xl border border-[#2A2D3E] text-sm font-medium text-[#64748B] hover:text-[#F1F5F9] hover:border-white/20 transition-colors"
             >
               Cancel

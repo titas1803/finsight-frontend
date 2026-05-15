@@ -1,10 +1,6 @@
 import { Form } from "react-bootstrap";
 import z from "zod";
-import {
-  Category,
-  PaymentModes,
-  TransactionType,
-} from "../../../constants/enums";
+import { Category, PaymentModes, TransactionType } from "../../constants/enums";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
@@ -13,15 +9,19 @@ import React from "react";
 import {
   useCreateTransaction,
   useUpdateTransaction,
-} from "../../../hooks/transactinHooks";
-import type { Transaction } from "../../../types/transaction.types";
+} from "../../hooks/transactionHooks";
+import type { Transaction } from "../../types/transaction.types";
 import {
+  ALL_CATEGORIES,
+  ALL_PAYMENT_MODES,
   ALL_TYPES,
   CAT_COLOR,
+  PAY_ICON,
   TRANSACTION_TYPE_CATEGORIES,
   TYPE_CFG,
-} from "../TransactionConfigs";
-import { capitalize } from "../../../utils/format";
+} from "./TransactionConfigs";
+import { capitalize } from "../../utils/format";
+import { Calendar } from "lucide-react";
 
 const transactionSchema = z.object({
   amount: z
@@ -62,7 +62,7 @@ type TransactionFormFields =
 
 type TransactionFormProps = {
   onClose: () => void;
-  updateData?: Transaction;
+  updateData: Transaction | null;
 };
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({
@@ -94,17 +94,36 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   });
 
   const selectedType: TransactionType = useWatch({ control, name: "type" });
-  const selectedCategory: TransactionType = useWatch({
+  const selectedCategory: Category = useWatch({
     control,
     name: "category",
+  });
+
+  const selectedPaymentMode: PaymentModes = useWatch({
+    control,
+    name: "paymentMode",
   });
 
   const onTransactionSubmit = (data: TransactionFormData) => {
     try {
       if (updateData) {
-        updateTransaction({ id: updateData.id, payload: data });
+        updateTransaction(
+          { id: updateData.id, payload: data },
+          {
+            onSuccess: () => {
+              onClose();
+            },
+          },
+        );
       } else {
-        createTransaction({ ...data, amount: data.amount });
+        createTransaction(
+          { ...data, amount: data.amount },
+          {
+            onSuccess: () => {
+              onClose();
+            },
+          },
+        );
       }
     } catch (err) {
       const message =
@@ -121,10 +140,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const activeCfg = TYPE_CFG[updateData?.type ?? TransactionType.EXPENSE];
 
+  console.log();
   return (
     <>
       <Form
-        className="flex-1 overflow-y-auto px-5 py-5 space-y-5 min-h-screen"
+        className="flex-1 overflow-y-auto px-5 py-5 space-y-5"
         onSubmit={handleSubmit(onTransactionSubmit)}
         noValidate
       >
@@ -214,19 +234,79 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             Category
           </Form.Label>
           <div className="grid grid-cols-4 gap-2">
-            {TRANSACTION_TYPE_CATEGORIES[selectedType].map((category) => {
-              const color = CAT_COLOR[category] ?? "#64748B";
-              const active = selectedCategory === category;
+            {(TRANSACTION_TYPE_CATEGORIES[selectedType] ?? ALL_CATEGORIES).map(
+              (category) => {
+                const color = CAT_COLOR[category] ?? "#64748B";
+                const active = selectedCategory === category;
+                return (
+                  <button
+                    key={category}
+                    {...register("category")}
+                    type="button"
+                    onClick={changeValue("category", category)}
+                    className="py-2 px-1 rounded-lg border text-xs font-medium transition-all"
+                    style={
+                      active
+                        ? {
+                            background: color + "20",
+                            borderColor: color,
+                            color,
+                          }
+                        : {
+                            background: "#0F1117",
+                            borderColor: "#2A2D3E",
+                            color: "#64748B",
+                          }
+                    }
+                  >
+                    {capitalize(category)}
+                  </button>
+                );
+              },
+            )}
+            <button
+              type="button"
+              onClick={changeValue("category", "other")}
+              className="py-2 px-1 rounded-lg border text-xs font-medium transition-all"
+              style={
+                selectedCategory === "other"
+                  ? {
+                      background: "#64748B" + "20",
+                      borderColor: "#64748B",
+                      color: "#64748B",
+                    }
+                  : {
+                      background: "#0F1117",
+                      borderColor: "#2A2D3E",
+                      color: "#64748B",
+                    }
+              }
+            >
+              {capitalize("other")}
+            </button>
+          </div>
+        </Form.Group>
+        <Form.Group className="space-y-2" controlId="transaction.paymentMode">
+          <Form.Label className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+            Payment Mode
+          </Form.Label>
+          <div className="grid grid-cols-3 gap-2">
+            {ALL_PAYMENT_MODES.map((mode) => {
+              const active = selectedPaymentMode === mode;
+              const Icon = PAY_ICON[mode];
               return (
                 <button
-                  key={category}
-                  {...register("category")}
                   type="button"
-                  onClick={changeValue("category", category)}
-                  className="py-2 px-1 rounded-lg border text-xs font-medium transition-all"
+                  key={mode}
+                  className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border text-xs font-medium transition-all"
+                  onClick={changeValue("paymentMode", mode)}
                   style={
                     active
-                      ? { background: color + "20", borderColor: color, color }
+                      ? {
+                          background: "#6C63FF18",
+                          borderColor: "#6C63FF",
+                          color: "#6C63FF",
+                        }
                       : {
                           background: "#0F1117",
                           borderColor: "#2A2D3E",
@@ -234,11 +314,38 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                         }
                   }
                 >
-                  {capitalize(category)}
+                  <Icon /> {capitalize(mode)}
                 </button>
               );
             })}
           </div>
+        </Form.Group>
+        <Form.Group className="space-y-2" controlId="transaction.date">
+          <Form.Label className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+            Date
+          </Form.Label>
+          <div className="relative">
+            <Calendar
+              size={14}
+              className="absolute left-3 top-1/4 translate-y-1/4 text-[#64748B] pointer-events-none"
+            />
+            <Form.Control
+              type="date"
+              placeholder="yyyy-mm-dd"
+              {...register("date")}
+              className={`w-full bg-[#0F1117] border rounded-xl pl-9 pr-4 py-2.5 text-sm text-[#F1F5F9] focus:outline-none transition-colors scheme-dark ${
+                errors.date
+                  ? "border-red-500"
+                  : "border-[#2A2D3E] focus:border-[#6C63FF]"
+              }`}
+            />
+          </div>
+          <Form.Text className="text-[#64748B]">
+            Date should be in dd-mm-yyyy format
+          </Form.Text>
+          {errors.date && (
+            <p className="text-xs text-red-400">{errors.date.message}</p>
+          )}
         </Form.Group>
         <div className="px-5 py-4 border-t border-[#2A2D3E] flex gap-3 shrink-0">
           <button

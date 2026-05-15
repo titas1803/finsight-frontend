@@ -39,8 +39,6 @@ export type RegisterPayload = {
 // POST /auth/refresh response
 export type RefreshTokenResponse = {
   message: string;
-  accessToken: string;
-  refreshToken: string;
 };
 
 // POST /auth/refresh request body
