@@ -10,6 +10,7 @@ import { register as registerApi } from "../../api/auth.api";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutePaths } from "../../constants/routes";
 import type { AxiosError } from "axios";
+import { PasswordStrength } from "../../components/PasswordStrengthComp";
 
 const registerSchema = z
   .object({
@@ -205,6 +206,7 @@ const RegisterPage: React.FC = () => {
               }`}
             />
           </InputGroup>
+          <PasswordStrength password={passwordValue} />
           <Button
             type="button"
             onClick={() => setShowPassword((p) => !p)}

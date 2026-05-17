@@ -4,11 +4,9 @@ import type { Transaction } from "../../types/transaction.types";
 import { TYPE_CFG } from "./TransactionConfigs";
 import { formatCurrency } from "../../utils/format";
 
-export const SummaryStrip = ({
-  transactions,
-}: {
+export const SummaryStrip: React.FC<{
   transactions: Transaction[];
-}) => {
+}> = ({ transactions }) => {
   const totals = useMemo(() => {
     return transactions.reduce(
       (acc, t) => {

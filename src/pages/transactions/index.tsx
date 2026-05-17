@@ -5,11 +5,13 @@ import type {
   TransactionFilters,
   Transaction,
 } from "../../types/transaction.types";
-import { DeleteTransaction } from "../../components/TransactionComponents/DeleteTransaction";
-import { SummaryStrip } from "../../components/TransactionComponents/TransactionSummary";
-import { TransactionDetails } from "../../components/TransactionComponents/TransactionDetails";
-import { TransactionDrawer } from "../../components/TransactionComponents/TransactionDrawer";
-import { TransactionFilterBar } from "../../components/TransactionComponents/TransactionFilterBar";
+import {
+  DeleteTransaction,
+  SummaryStrip,
+  TransactionDetails,
+  TransactionDrawer,
+  TransactionFilterBar,
+} from "../../components/TransactionComponents";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 const EMPTY_FILTERS: TransactionFilters = {};
