@@ -2,12 +2,12 @@ import { Form } from "react-bootstrap";
 import { InputField, TextInput } from "./ProfileInputFields";
 import { User, Mail, Phone, BadgeCheck, Check, Pencil, X } from "lucide-react";
 import z from "zod";
-import { useForm, useWatch, type FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useUpdateProfile } from "../../hooks/profileHooks";
 import { useAuth } from "../../hooks/useAuth";
-import { formatDate } from "../../utils/format";
+import { capitalize, formatDate } from "../../utils/format";
 import type { UpdateProfilePayload } from "../../types/auth.types";
 import toast from "react-hot-toast";
 
@@ -63,7 +63,6 @@ export const UpdateProfileForm: React.FC = () => {
   };
 
   const {
-    control,
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
@@ -75,16 +74,9 @@ export const UpdateProfileForm: React.FC = () => {
     resolver: zodResolver(updatProfileSchema),
   });
 
-  const firstNameVal = useWatch({ control, name: "firstName" });
-  const lastNameVal = useWatch({ control, name: "lastName" });
-
   const handleCancel = () => {
     setEditing(false);
     reset(defaultValues);
-  };
-
-  const onErrorHandler = (errors: FieldErrors) => {
-    console.log(errors, firstNameVal, lastNameVal);
   };
 
   const onSubmithandler = async (data: UpdateProfileFormData) => {
@@ -114,7 +106,7 @@ export const UpdateProfileForm: React.FC = () => {
   return (
     <Form
       className="bg-[#1A1D27] border border-[#2A2D3E] rounded-2xl overflow-hidden"
-      onSubmit={handleSubmit(onSubmithandler, onErrorHandler)}
+      onSubmit={handleSubmit(onSubmithandler)}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2D3E]">
@@ -158,14 +150,15 @@ export const UpdateProfileForm: React.FC = () => {
       </div>
 
       {/* Avatar + display info */}
-      <div className="px-6 py-5 flex items-center gap-4 border-b border-[#2A2D3E]">
+      <div className="px-6 py-5 flex flex-col sm:flex-row items-center gap-4 border-b border-[#2A2D3E]">
         <Avatar
           firstName={user?.firstName ?? ""}
           lastName={user?.lastName ?? ""}
         />
-        <div>
+        <div className="text-center sm:text-start">
           <p className="text-base font-bold text-[#F1F5F9]">
-            {user?.firstName} {user?.lastName}
+            {capitalize(user?.firstName ?? "")}{" "}
+            {capitalize(user?.lastName ?? "")}
           </p>
           <p className="text-sm text-[#64748B] mt-0.5">{user?.email}</p>
           {user?.createdAt && (

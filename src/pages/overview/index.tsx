@@ -27,7 +27,6 @@ import {
   useSummary,
   useMonthlyTransactions,
   useExpenseByCategory,
-  usePeriodicInsight,
   useRecentTransactions,
 } from "@/hooks/overviewHooks";
 import { RoutePaths } from "@/constants/routes";
@@ -38,6 +37,7 @@ import { SummaryCard } from "@/components/OverviewComponents/SummaryCard";
 import type { InsightPeriod } from "@/types/insight.types";
 import { marked } from "marked";
 import parse from "html-react-parser";
+import { usePeriodicInsight } from "@/hooks/insightHooks";
 // ─── Color map ────────────────────────────────────────────────────────────────
 const CATEGORY_COLORS: Record<string, string> = {
   food: "#F59E0B",
@@ -65,7 +65,7 @@ function ChartTooltip({
   label,
 }: {
   active: boolean;
-  payload: { name: string; color: string; value: number }[];
+  payload?: { name: string; color: string; value: number }[];
   label: string;
 }) {
   if (!active || !payload?.length) return null;
@@ -209,7 +209,7 @@ export default function OverviewPage() {
               <BarChart data={monthly ?? []} barSize={8} barGap={3}>
                 <CartesianGrid vertical={false} stroke="#2A2D3E" />
                 <XAxis
-                  dataKey="income"
+                  dataKey="date"
                   tick={{ fill: "#64748B", fontSize: 11 }}
                   axisLine={false}
                   tickLine={false}
@@ -221,22 +221,20 @@ export default function OverviewPage() {
                   tickFormatter={(v) => formatCurrency(v, true)}
                   width={52}
                 />
-                {monthly && (
-                  <Tooltip
-                    content={
-                      <ChartTooltip
-                        active
-                        label="tip"
-                        payload={monthly.map((monthData) => ({
-                          name: "expense",
-                          color: "#EF4444",
-                          value: monthData.expense,
-                        }))}
-                      />
-                    }
-                    cursor={{ fill: "rgba(255,255,255,0.03)" }}
-                  />
-                )}
+                <Tooltip
+                  content={
+                    <ChartTooltip
+                      active
+                      label="tip"
+                      payload={monthly?.map((monthData) => ({
+                        name: "expense",
+                        color: "#EF4444",
+                        value: monthData.expense,
+                      }))}
+                    />
+                  }
+                  cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                />
                 <Bar dataKey="income" fill="#22C55E" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="expense" fill="#EF4444" radius={[4, 4, 0, 0]} />
                 <Bar

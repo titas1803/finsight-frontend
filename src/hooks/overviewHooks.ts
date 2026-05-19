@@ -5,21 +5,13 @@ import {
   getSpecificPeriod,
   getTransactionSummary,
 } from "../api/transaction.api";
-import { getInsights } from "../api/insight.api";
 import { TransactionType } from "../constants/enums";
-import type { InsightPeriod } from "../types/insight.types";
+import { queryKeys } from "@/constants/queryKeys";
 
-export const overviewKeys = {
-  summary: ["transactions", "summary"] as const,
-  recent: ["transactions", "list", "recent"] as const,
-  insight: (period: InsightPeriod) => ["insights", period] as const,
-  byCategory: ["transactions", "byType", "expense"] as const,
-  monthlyDays: ["transactions", "lastDays", "month"] as const,
-};
-
+const overviewKeys = queryKeys.transactions;
 export const useSummary = () =>
   useQuery({
-    queryKey: overviewKeys.summary,
+    queryKey: overviewKeys.summary(),
     queryFn: () => getTransactionSummary(),
   });
 
@@ -28,13 +20,6 @@ export const useRecentTransactions = () =>
     queryKey: overviewKeys.recent,
     queryFn: () =>
       getAllTransactions({ sortBy: "date", order: "DESC", limit: 5 }),
-  });
-
-export const usePeriodicInsight = (period: InsightPeriod) =>
-  useQuery({
-    queryKey: overviewKeys.insight(period),
-    queryFn: () => getInsights(period),
-    staleTime: 1000 * 60 * 30,
   });
 
 export const useExpenseByCategory = () =>

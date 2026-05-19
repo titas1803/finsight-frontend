@@ -33,8 +33,9 @@ export type TransactionType =
 export const IncomeCategory = {
   SALARY: "salary",
   DIVIDEND: "dividend",
-  INVESTMENT: "investment",
+  PASSIVE: "passive",
 };
+
 export type IncomeCategory =
   (typeof IncomeCategory)[keyof typeof IncomeCategory];
 

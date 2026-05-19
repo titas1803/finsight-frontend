@@ -15,6 +15,9 @@ export const queryKeys = {
       ["transactions", "byType", type, category] as const,
     lastDays: (period: "week" | "month" | "year") =>
       ["transactions", "lastDays", period] as const,
+    recent: ["transactions", "list", "recent"] as const,
+    monthlyDays: ["transactions", "lastDays", "month"] as const,
+    byCategory: ["transactions", "byType", "expense"] as const,
   },
   insights: {
     period: (period: InsightPeriod) => ["insights", period] as const,
