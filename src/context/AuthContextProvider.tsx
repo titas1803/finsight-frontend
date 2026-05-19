@@ -48,6 +48,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setUser(null);
     }
   }, []);
+
   useEffect(() => {
     const restoreSession = async () => {
       try {

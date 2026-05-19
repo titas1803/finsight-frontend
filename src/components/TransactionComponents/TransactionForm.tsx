@@ -140,7 +140,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const activeCfg = TYPE_CFG[updateData?.type ?? TransactionType.EXPENSE];
 
-  console.log();
   return (
     <>
       <Form

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Plus, ArrowUpDown } from "lucide-react";
-import { useTransactions } from "../../hooks/transactionHooks";
+import { useTransactions } from "@/hooks/transactionHooks";
 import type {
   TransactionFilters,
   Transaction,
-} from "../../types/transaction.types";
+} from "@/types/transaction.types";
 import {
   DeleteTransaction,
   SummaryStrip,
   TransactionDetails,
   TransactionDrawer,
   TransactionFilterBar,
-} from "../../components/TransactionComponents";
+} from "@/components/TransactionComponents";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 const EMPTY_FILTERS: TransactionFilters = {};

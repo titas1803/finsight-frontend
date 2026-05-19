@@ -34,12 +34,8 @@ export const getMe = async () => {
   return data;
 };
 
-export const refreshTokens = async (refreshToken: string) => {
-  const { data } = await api.post<{
-    refreshToken: string;
-    accessToken: string;
-  }>(`/${AuthUrls.REFRESHTOKEN}`, { refreshToken });
-  return data;
+export const refreshTokens = async () => {
+  await api.post(`/${AuthUrls.REFRESHTOKEN}`, {});
 };
 
 export const upddatePassword = async (

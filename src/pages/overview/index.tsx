@@ -29,17 +29,13 @@ import {
   useExpenseByCategory,
   usePeriodicInsight,
   useRecentTransactions,
-} from "../../hooks/overviewHooks";
-import { RoutePaths } from "../../constants/routes";
-import { TransactionType } from "../../constants/enums";
-import {
-  formatCurrency,
-  formatShortDate,
-  capitalize,
-} from "../../utils/format";
-import { cn } from "../../utils/cn";
-import { SummaryCard } from "../../components/OverviewComponents/SummaryCard";
-import type { InsightPeriod } from "../../types/insight.types";
+} from "@/hooks/overviewHooks";
+import { RoutePaths } from "@/constants/routes";
+import { TransactionType } from "@/constants/enums";
+import { formatCurrency, formatShortDate, capitalize } from "@/utils/format";
+import { cn } from "@/utils/cn";
+import { SummaryCard } from "@/components/OverviewComponents/SummaryCard";
+import type { InsightPeriod } from "@/types/insight.types";
 import { marked } from "marked";
 import parse from "html-react-parser";
 // ─── Color map ────────────────────────────────────────────────────────────────

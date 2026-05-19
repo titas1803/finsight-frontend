@@ -4,13 +4,13 @@ import React, { useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
-import type { RegisterPayload } from "../../types/auth.types";
+import type { RegisterPayload } from "@/types/auth.types";
 import toast from "react-hot-toast";
-import { register as registerApi } from "../../api/auth.api";
+import { register as registerApi } from "@/api/auth.api";
 import { Link, useNavigate } from "react-router-dom";
-import { RoutePaths } from "../../constants/routes";
+import { RoutePaths } from "@/constants/routes";
 import type { AxiosError } from "axios";
-import { PasswordStrength } from "../../components/PasswordStrengthComp";
+import { PasswordStrength } from "@/components/PasswordStrengthComp";
 
 const registerSchema = z
   .object({

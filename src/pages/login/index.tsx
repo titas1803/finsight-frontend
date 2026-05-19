@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff, Mail, Phone } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import type { LoginPayload } from "../../types/auth.types";
+import type { LoginPayload } from "@/types/auth.types";
 import toast from "react-hot-toast";
 import type { AxiosError } from "axios";
-import { login as loginApi } from "../../api/auth.api";
+import { login as loginApi } from "@/api/auth.api";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { RoutePaths } from "../../constants/routes";
+import { RoutePaths } from "@/constants/routes";
 
 const loginSchema = z
   .object({

@@ -8,5 +8,8 @@ export default defineConfig({
   build: {
     cssMinify: "esbuild",
   },
+  resolve: {
+    tsconfigPaths: true,
+  },
   envPrefix: "FINSIGHT_",
 });

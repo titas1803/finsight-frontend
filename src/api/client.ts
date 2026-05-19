@@ -1,20 +1,23 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
-import { RoutePaths } from "../constants/routes";
 import { AuthUrls } from "../constants/enums";
 
+const baseURL = import.meta.env.FINSIGHT_API_URL;
+
+if (!baseURL) {
+  console.error("Missing FINSIGHT_API_URL environment variable.");
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.FINSIGHT_API_URL,
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
   withCredentials: true,
+  timeout: 15000,
 });
-
-// Refresh Queuse
 
 const clearSession = () => {
   localStorage.removeItem("user");
-  window.location.href = RoutePaths.LOGIN;
 };
 
 let isRefreshing: boolean = false;
@@ -33,8 +36,8 @@ const flushQueue = (error: unknown) => {
 };
 
 const fetchTokens = async () => {
-  return await axios.post(
-    `${import.meta.env.FINSIGHT_API_URL}/${AuthUrls.REFRESHTOKEN}`,
+  return await api.post(
+    `/${AuthUrls.REFRESHTOKEN}`,
     {},
     {
       withCredentials: true,
@@ -60,8 +63,8 @@ api.interceptors.response.use(
     const isAuthRoute =
       original.url?.includes(AuthUrls.LOGIN) ||
       original.url?.includes(AuthUrls.REFRESHTOKEN) ||
-      original.url?.includes(AuthUrls.REGISTER);
-
+      original.url?.includes(AuthUrls.REGISTER) ||
+      original.url?.includes(AuthUrls.LOGOUT);
     if (isAuthRoute) {
       return Promise.reject(error);
     }

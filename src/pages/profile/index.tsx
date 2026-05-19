@@ -2,7 +2,7 @@ import {
   ChangePasswordForm,
   DangerZoneCard,
   UpdateProfileForm,
-} from "../../components/ProfileComponents";
+} from "@/components/ProfileComponents";
 
 export default function ProfilePage() {
   return (
