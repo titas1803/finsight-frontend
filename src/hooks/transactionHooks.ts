@@ -33,6 +33,7 @@ export const useUpdateTransaction = () => {
     mutationFn: updateTransaction,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.insights.all });
       toast.success("Transaction updated successfully!");
     },
     onError: () => toast.error("Failed to update transaction"),

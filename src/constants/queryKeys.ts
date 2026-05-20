@@ -20,6 +20,7 @@ export const queryKeys = {
     byCategory: ["transactions", "byType", "expense"] as const,
   },
   insights: {
+    all: ["insights"],
     period: (period: InsightPeriod) => ["insights", period] as const,
     category: (category: Category) =>
       ["insights", "category", category] as const,
