@@ -13,7 +13,7 @@ const getGreeting = (firsName: string): string => {
   let greet = "Good evening";
 
   if (hour < 12) greet = "Good morning";
-  if (hour < 17) greet = "Good afternoon";
+  else if (hour < 17) greet = "Good afternoon";
 
   const name = toSentenceCase(firsName);
 
