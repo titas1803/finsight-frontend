@@ -18,11 +18,11 @@ const registerSchema = z
       .string()
       .min(1, "First name is required")
       .max(50, "First name must be under 50 characters")
-      .regex(/^[a-z]$/i, "First name can only contain letters"),
+      .regex(/^[a-z]+$/i, "First name can only contain letters"),
     lastName: z
       .string()
       .max(50, "Last name must be under 50 characters")
-      .regex(/^[a-z]$/i, "Last name can only contain letters")
+      .regex(/^[a-z]+$/i, "Last name can only contain letters")
       .optional()
       .or(z.literal("")),
     email: z.email("Enter a valid email address").min(1, "Email is required"),
@@ -150,7 +150,7 @@ const RegisterPage: React.FC = () => {
           </Form.Label>
           <Form.Control
             type="email"
-            {...register}
+            {...register("email")}
             placeholder="john@email.com"
             autoComplete="email"
             className={`w-full bg-surface border rounded-xl px-4 py-3 text-text-primary text-sm placeholder:text-text-muted/50 outline-none transition-colors focus:border-primary ${
@@ -205,20 +205,20 @@ const RegisterPage: React.FC = () => {
                 errors.password ? "border-expense" : "border-border"
               }`}
             />
+            <Button
+              type="button"
+              onClick={() => setShowPassword((p) => !p)}
+              className="absolute right-3 top-1/4 translate-y-1/3 text-text-muted hover:text-text-primary transition-colors"
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </Button>
           </InputGroup>
-          <PasswordStrength password={passwordValue} />
-          <Button
-            type="button"
-            onClick={() => setShowPassword((p) => !p)}
-            className="absolute right-3 top-1/2 translate-y-1/3 text-text-muted hover:text-text-primary transition-colors"
-          >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </Button>
           {errors.password && !passwordValue && (
             <p className="text-expense text-xs mt-1.5">
               {errors.password.message}
             </p>
           )}
+          <PasswordStrength password={passwordValue} />
         </Form.Group>
         <Form.Group className="relative mb-6" controlId="form.confirm-password">
           <Form.Label className="block text-text-muted text-xs uppercase tracking-wider mb-1.5">
@@ -234,14 +234,14 @@ const RegisterPage: React.FC = () => {
                 errors.confirmPassword ? "border-expense" : "border-border"
               }`}
             />
+            <Button
+              type="button"
+              onClick={() => setShowConfirmPassword((p) => !p)}
+              className="absolute right-3 top-1/4 translate-y-1/3 text-text-muted hover:text-text-primary transition-colors"
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </Button>
           </InputGroup>
-          <Button
-            type="button"
-            onClick={() => setShowConfirmPassword((p) => !p)}
-            className="absolute right-3 top-1/2 translate-y-1/3 text-text-muted hover:text-text-primary transition-colors"
-          >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </Button>
           {errors.confirmPassword && (
             <p className="text-expense text-xs mt-1.5">
               {errors.confirmPassword.message}
