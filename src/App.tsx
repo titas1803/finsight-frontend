@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import "./App.scss";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { RoutePaths } from "./constants/routes";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ToastComp } from "./components/Common/CommonToast/index.tsx";
@@ -11,6 +11,7 @@ const AuthLayout = lazy(() => import("./components/Authlayout/index.tsx"));
 const DashboardLayout = lazy(
   () => import("./components/DashboardLayout/index.tsx"),
 );
+const HomePage = lazy(() => import("./pages/home"));
 const LoginPage = lazy(() => import("./pages/login"));
 const RegisterPage = lazy(() => import("./pages/register"));
 const OverviewPage = lazy(() => import("./pages/overview"));
@@ -43,10 +44,7 @@ const App: React.FC = () => {
               </Route>
             </Route>
 
-            <Route
-              path="/"
-              element={<Navigate to={RoutePaths.OVERVIEW} replace />}
-            />
+            <Route path="/" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

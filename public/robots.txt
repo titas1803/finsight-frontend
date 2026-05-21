@@ -1,0 +1,18 @@
+# robots.txt for FinSight
+# https://finsight-frontend-ten.vercel.app
+
+User-agent: *
+
+# Allow public pages
+Allow: /$
+Allow: /login
+Allow: /register
+
+# Block all authenticated dashboard routes
+Disallow: /dashboard
+Disallow: /dashboard/
+
+# Block any API calls that might be indexed
+Disallow: /api/
+
+Sitemap: https://finsight-frontend-ten.vercel.app/sitemap.xml
