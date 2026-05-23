@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "../Menus/Sidebar";
-import { TopBar } from "../Menus/TopBar";
+import { Sidebar } from "../../components/Menus/Sidebar";
+import { TopBar } from "../../components/Menus/TopBar";
 import { useIsMobile } from "../../hooks/useIsMobile";
 const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

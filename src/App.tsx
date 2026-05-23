@@ -2,14 +2,14 @@ import React, { lazy, Suspense } from "react";
 import "./App.scss";
 import { Route, Routes } from "react-router-dom";
 import { RoutePaths } from "./constants/routes";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ProtectedRoute } from "./middleware/ProtectedRoute/index.tsx";
 import { ToastComp } from "./components/Common/CommonToast/index.tsx";
 import { AuthProvider } from "./context/AuthContextProvider.tsx";
 import { Loading } from "./components/Common/Loading/index.tsx";
 
-const AuthLayout = lazy(() => import("./components/Authlayout/index.tsx"));
+const AuthLayout = lazy(() => import("./layouts/Authlayout/index.tsx"));
 const DashboardLayout = lazy(
-  () => import("./components/DashboardLayout/index.tsx"),
+  () => import("./layouts/DashboardLayout/index.tsx"),
 );
 const HomePage = lazy(() => import("./pages/home"));
 const LoginPage = lazy(() => import("./pages/login"));
