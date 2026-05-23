@@ -21,7 +21,7 @@ export default function Insights() {
 
   return (
     <div className="min-h-screen" style={{ background: "#0F1117" }}>
-      <div className="max-w-300 mx-auto p-4 lg:p-6 space-y-6">
+      <div className="max-w-300 mx-auto p-3 md:p-6 space-y-6">
         {/* ── Page Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>

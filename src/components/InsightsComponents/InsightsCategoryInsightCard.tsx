@@ -20,7 +20,7 @@ export const InsightsCategoryInsightPanel: React.FC = () => {
 
   return (
     <div
-      className="rounded-2xl p-5"
+      className="rounded-2xl p-3 mdp-5"
       style={{ background: "#1A1D27", border: "1px solid #2A2D3E" }}
     >
       {/* Header */}
@@ -66,13 +66,7 @@ export const InsightsCategoryInsightPanel: React.FC = () => {
 
       {/* Insight Result */}
       {selectedCategory === null ? (
-        <div
-          className="flex items-center justify-center py-8 rounded-xl"
-          style={{
-            background: "rgba(255,255,255,0.02)",
-            border: "1px dashed #2A2D3E",
-          }}
-        >
+        <div className="flex items-center justify-center py-6 px-3 rounded-xl bg-white/2 border boder-dashed border-border">
           <p className="text-sm" style={{ color: "#64748B" }}>
             Select a category above to see AI insights
           </p>

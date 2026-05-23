@@ -12,7 +12,7 @@ export const InsightsStatCard: React.FC<{
 
   return (
     <div
-      className="flex flex-col gap-3 p-4 rounded-2xl"
+      className="flex flex-col gap-3 px-2 md:px-4 py-4 rounded-2xl"
       style={{ background: "#1A1D27", border: "1px solid #2A2D3E" }}
     >
       <div className="flex items-center justify-between">
