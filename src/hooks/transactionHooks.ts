@@ -66,6 +66,9 @@ export const useTransactions = (filters?: TransactionFilters) => {
             message: "No transactions found",
             count: 0,
             transactions: [],
+            totalExpense: 0,
+            totalIncome: 0,
+            totalInvestment: 0,
           };
         }
         throw err;

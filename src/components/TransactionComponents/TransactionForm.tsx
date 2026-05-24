@@ -1,6 +1,6 @@
 import { Form } from "react-bootstrap";
 import z from "zod";
-import { Category, PaymentModes, TransactionType } from "../../constants/enums";
+import { Category, PaymentModes, TransactionType } from "@/constants/enums";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
@@ -9,10 +9,9 @@ import React from "react";
 import {
   useCreateTransaction,
   useUpdateTransaction,
-} from "../../hooks/transactionHooks";
-import type { Transaction } from "../../types/transaction.types";
+} from "@/hooks/transactionHooks";
+import type { Transaction } from "@/types/transaction.types";
 import {
-  ALL_CATEGORIES,
   ALL_PAYMENT_MODES,
   ALL_TYPES,
   CAT_COLOR,
@@ -20,7 +19,7 @@ import {
   TRANSACTION_TYPE_CATEGORIES,
   TYPE_CFG,
 } from "./TransactionConfigs";
-import { capitalize } from "../../utils/format";
+import { capitalize } from "@/utils/format";
 import { Calendar } from "lucide-react";
 
 const transactionSchema = z.object({
@@ -138,7 +137,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       setValue(field, value);
     };
 
-  const activeCfg = TYPE_CFG[updateData?.type ?? TransactionType.EXPENSE];
+  const activeCfg = TYPE_CFG[selectedType] ?? {
+    color: "#64748B",
+  };
 
   return (
     <>
@@ -152,7 +153,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             className="text-xs font-semibold text-[#64748B] uppercase tracking-wider"
             htmlFor="transaction-type"
           >
-            Type
+            Type <span className="text-expense">*</span>
           </Form.Label>
           <div className="grid grid-cols-3 gap-2">
             {ALL_TYPES.map((type) => {
@@ -188,7 +189,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         </Form.Group>
         <Form.Group className="space-y-1.5" controlId="transaction.amount">
           <Form.Label className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-            Amount
+            Amount <span className="text-expense">*</span>
           </Form.Label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm font-semibold">
@@ -230,10 +231,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         </Form.Group>
         <Form.Group className="space-y-2" controlId="transaction.category">
           <Form.Label className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-            Category
+            Category <span className="text-expense">*</span>
           </Form.Label>
           <div className="grid grid-cols-4 gap-2">
-            {(TRANSACTION_TYPE_CATEGORIES[selectedType] ?? ALL_CATEGORIES).map(
+            {(TRANSACTION_TYPE_CATEGORIES[selectedType] ?? []).map(
               (category) => {
                 const color = CAT_COLOR[category] ?? "#64748B";
                 const active = selectedCategory === category;
@@ -258,7 +259,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                           }
                     }
                   >
-                    {capitalize(category)}
+                    {capitalize(category.replace(/-/g, " "))}
                   </button>
                 );
               },
@@ -287,7 +288,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         </Form.Group>
         <Form.Group className="space-y-2" controlId="transaction.paymentMode">
           <Form.Label className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-            Payment Mode
+            Payment Mode <span className="text-expense">*</span>
           </Form.Label>
           <div className="grid grid-cols-3 gap-2">
             {ALL_PAYMENT_MODES.map((mode) => {
@@ -321,7 +322,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         </Form.Group>
         <Form.Group className="space-y-2" controlId="transaction.date">
           <Form.Label className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
-            Date
+            Date <span className="text-expense">*</span>
           </Form.Label>
           <div className="relative">
             <Calendar

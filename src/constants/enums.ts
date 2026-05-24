@@ -41,7 +41,7 @@ export type IncomeCategory =
 
 export const InvestmentCategory = {
   STOCKS: "stocks",
-  MUTUAL_FUND: "MUTUAL_FUND",
+  MUTUAL_FUND: "mutual-fund",
   PPF: "ppf",
   FD: "fd",
   INSURANCE: "insurance",

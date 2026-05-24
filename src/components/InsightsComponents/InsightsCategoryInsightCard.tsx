@@ -3,6 +3,7 @@ import { useCategoryInsights } from "@/hooks/insightHooks";
 import { BarChart3, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { CATEGORY_META, InsightsSkeleton } from ".";
+import parse from "html-react-parser";
 
 export const InsightsCategoryInsightPanel: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -113,7 +114,7 @@ export const InsightsCategoryInsightPanel: React.FC = () => {
                 className="text-sm leading-relaxed"
                 style={{ color: "#94A3B8" }}
               >
-                {data.insight}
+                {parse(data.insight)}
               </p>
               {data.stats && (
                 <div

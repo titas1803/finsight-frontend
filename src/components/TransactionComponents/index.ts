@@ -13,4 +13,4 @@ export { TransactionDetails } from "./TransactionDetails";
 export { TransactionDrawer } from "./TransactionDrawer";
 export { TransactionFilterBar } from "./TransactionFilterBar";
 export { TransactionForm } from "./TransactionForm";
-export { SummaryStrip } from "./TransactionSummary";
+export { TransactionSummary } from "./TransactionSummary";

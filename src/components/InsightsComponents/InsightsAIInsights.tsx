@@ -1,5 +1,6 @@
 import { Sparkles, RefreshCw, AlertCircle } from "lucide-react";
 import { InsightsSkeleton } from "./InsightsSkeleton";
+import parse from "html-react-parser";
 
 export const InsightsAIInsights: React.FC<{
   insight: string | null;
@@ -60,7 +61,7 @@ export const InsightsAIInsights: React.FC<{
         </div>
       ) : (
         <p className="text-sm leading-relaxed" style={{ color: "#94A3B8" }}>
-          {insight}
+          {insight ? parse(insight) : "No insight available. Try refreshing!"}
         </p>
       )}
     </div>

@@ -48,6 +48,7 @@ export type TransactionFilters = {
   search?: string;
   sortBy?: "date" | "amount";
   order?: "ASC" | "DESC";
+  pageNo?: number;
   limit?: number;
 };
 
@@ -55,6 +56,9 @@ export type TransactionFilters = {
 export type TransactionListResponse = {
   message: string;
   count: number;
+  totalIncome: number;
+  totalExpense: number;
+  totalInvestment: number;
   transactions: Transaction[];
 };
 
