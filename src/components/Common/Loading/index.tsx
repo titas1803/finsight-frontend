@@ -7,3 +7,11 @@ export const Loading: React.FC = () => {
     </div>
   );
 };
+
+export const SectionSpinner: React.FC = () => {
+  return (
+    <div className="flex items-center justify-center py-24">
+      <div className="w-7 h-7 border-2 border-[#6C63FF] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+};
