@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus, ArrowUpDown } from "lucide-react";
 import { useTransactions } from "@/hooks/transactionHooks";
 import type {
@@ -7,14 +7,14 @@ import type {
 } from "@/types/transaction.types";
 import {
   DeleteTransaction,
-  SummaryStrip,
+  TransactionSummary,
   TransactionDetails,
   TransactionDrawer,
   TransactionFilterBar,
 } from "@/components/TransactionComponents";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
-const EMPTY_FILTERS: TransactionFilters = {};
+const EMPTY_FILTERS: TransactionFilters = { limit: 10 };
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -81,6 +81,17 @@ export default function TransactionsPage() {
     (v) => v !== undefined && v !== "",
   );
 
+  const pagination: number[] = useMemo(() => {
+    const arr = [1];
+    if (count > filters.limit!) {
+      const totalPages = Math.ceil(count / filters.limit!);
+      for (let i = 2; i <= totalPages; i++) {
+        arr.push(i);
+      }
+    }
+    return arr;
+  }, [count, filters.limit]);
+
   function openAdd() {
     setEditingTxn(null);
     setDrawerOpen(true);
@@ -122,7 +133,11 @@ export default function TransactionsPage() {
 
       {/* Summary strip — only when there are results */}
       {!isLoading && transactions.length > 0 && (
-        <SummaryStrip transactions={transactions} />
+        <TransactionSummary
+          totalExpense={data?.totalExpense ?? 0}
+          totalIncome={data?.totalIncome ?? 0}
+          totalInvestment={data?.totalInvestment ?? 0}
+        />
       )}
       {isLoading && (
         <div className="grid grid-cols-3 gap-3">
@@ -157,11 +172,26 @@ export default function TransactionsPage() {
         ) : transactions.length === 0 ? (
           <EmptyState hasFilters={hasFilters} onAdd={openAdd} />
         ) : (
-          <TransactionDetails
-            onDelete={setDeletingTxn}
-            onEdit={openEdit}
-            transactions={transactions}
-          />
+          <>
+            <TransactionDetails
+              onDelete={setDeletingTxn}
+              onEdit={openEdit}
+              transactions={transactions}
+            />
+            {pagination.length > 1 && (
+              <div className="flex justify-center gap-2 py-4">
+                {pagination.map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => patchFilter({ pageNo: page })}
+                    className="px-3 py-1 rounded-md bg-[#2A2D3E] text-[#F1F5F9] hover:bg-[#3A3D4E] transition-colors"
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 

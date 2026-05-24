@@ -1,41 +1,31 @@
-import { useMemo } from "react";
 import { TransactionType } from "../../constants/enums";
-import type { Transaction } from "../../types/transaction.types";
+import type { TransactionListResponse } from "../../types/transaction.types";
 import { TYPE_CFG } from "./TransactionConfigs";
 import { formatCurrency } from "../../utils/format";
+import React from "react";
 
-export const SummaryStrip: React.FC<{
-  transactions: Transaction[];
-}> = ({ transactions }) => {
-  const totals = useMemo(() => {
-    return transactions.reduce(
-      (acc, t) => {
-        if (t.type === TransactionType.INCOME) acc.income += Number(t.amount);
-        else if (t.type === TransactionType.EXPENSE)
-          acc.expense += Number(t.amount);
-        else acc.investment += Number(t.amount);
-        return acc;
-      },
-      { income: 0, expense: 0, investment: 0 },
-    );
-  }, [transactions]);
-
+export const TransactionSummary: React.FC<
+  Pick<
+    TransactionListResponse,
+    "totalExpense" | "totalIncome" | "totalInvestment"
+  >
+> = React.memo((totals) => {
   return (
     <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
       {(
         [
           {
-            key: "income",
+            key: "totalIncome",
             label: "Income",
             cfg: TYPE_CFG[TransactionType.INCOME],
           },
           {
-            key: "expense",
+            key: "totalExpense",
             label: "Expenses",
             cfg: TYPE_CFG[TransactionType.EXPENSE],
           },
           {
-            key: "investment",
+            key: "totalInvestment",
             label: "Investments",
             cfg: TYPE_CFG[TransactionType.INVESTMENT],
           },
@@ -57,4 +47,4 @@ export const SummaryStrip: React.FC<{
       ))}
     </div>
   );
-};
+});
