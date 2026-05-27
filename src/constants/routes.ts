@@ -5,4 +5,6 @@ export const RoutePaths = {
   PROFILE: "/dashboard/profile",
   TRANSACTIONS: "/dashboard/transactions",
   INSIGHTS: "/dashboard/insights",
+  VERIFY_EMAIL: "/verify-email",
+  RESEND_VERIFICATION: "/resend-verification",
 };

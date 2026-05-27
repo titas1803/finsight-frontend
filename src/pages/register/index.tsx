@@ -86,7 +86,13 @@ const RegisterPage: React.FC = () => {
       };
 
       await registerApi(payload);
-      navigate(RoutePaths.LOGIN);
+      toast.success(
+        "Registration successful! Please check your email to verify your account.",
+      );
+      navigate(RoutePaths.LOGIN, {
+        replace: true,
+        state: { email: data.email },
+      });
     } catch (err) {
       const message =
         (err as AxiosError<{ message: string }>)?.response?.data?.message ??

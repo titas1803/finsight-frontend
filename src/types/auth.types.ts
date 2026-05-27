@@ -9,6 +9,7 @@ export type User = {
   role: UserRole;
   createdAt: string;
   updatedAt?: string;
+  isVerified: boolean;
 };
 
 // What AuthContext stores

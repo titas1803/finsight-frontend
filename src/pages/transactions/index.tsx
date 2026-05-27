@@ -73,7 +73,7 @@ export default function TransactionsPage() {
   const [editingTxn, setEditingTxn] = useState<Transaction | null>(null);
   const [deletingTxn, setDeletingTxn] = useState<Transaction | null>(null);
 
-  const { data, isLoading, isError } = useTransactions(filters);
+  const { data, isLoading, isError, refetch } = useTransactions(filters);
 
   const transactions = data?.transactions ?? [];
   const count = data?.count ?? 0;
@@ -164,7 +164,7 @@ export default function TransactionsPage() {
             Failed to load transactions.{" "}
             <button
               className="text-[#6C63FF] hover:underline"
-              onClick={() => window.location.reload()}
+              onClick={() => refetch()}
             >
               Retry
             </button>

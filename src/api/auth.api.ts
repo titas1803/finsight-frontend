@@ -38,12 +38,24 @@ export const refreshTokens = async () => {
   await api.post(`/${AuthUrls.REFRESHTOKEN}`, {});
 };
 
-export const upddatePassword = async (
+export const updatePassword = async (
   payload: UpdatePasswordPayload,
 ): Promise<{ message: string }> => {
   const { data } = await api.patch<{ message: string }>(
     `/${AuthUrls.UPDATEPASSWORD}`,
     payload,
   );
+  return data;
+};
+
+export const verifyEmail = async (token: string) => {
+  const { data } = await api.get(`/${AuthUrls.VERIFYEMAIL}`, {
+    params: { token },
+  });
+  return data;
+};
+
+export const resendVerification = async (email: string) => {
+  const { data } = await api.post(`/${AuthUrls.RESENDVERIFICATION}`, { email });
   return data;
 };
