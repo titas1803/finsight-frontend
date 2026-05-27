@@ -5,6 +5,8 @@ export const AuthUrls = {
   LOGOUT: "auth/logout",
   REFRESHTOKEN: "auth/refresh-tokens",
   UPDATEPASSWORD: "auth/update-password",
+  VERIFYEMAIL: "auth/verify-email",
+  RESENDVERIFICATION: "auth/resend-verification",
 };
 
 export const TransactionUrls = {

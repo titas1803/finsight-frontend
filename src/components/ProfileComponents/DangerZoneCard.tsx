@@ -11,7 +11,7 @@ export const DangerZoneCard: React.FC = () => {
 
   async function handleLogout() {
     await logout();
-    navigate(RoutePaths.LOGIN);
+    navigate(RoutePaths.LOGIN, { replace: true });
   }
 
   return (

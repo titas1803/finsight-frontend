@@ -66,6 +66,8 @@ const LoginPage: React.FC = () => {
   const from =
     (location.state as { from?: string })?.from ?? RoutePaths.OVERVIEW;
 
+  const defaultEmail = location.state?.email ?? "";
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -75,7 +77,7 @@ const LoginPage: React.FC = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       loginMethod: "email",
-      email: "",
+      email: defaultEmail,
       phoneNumber: "",
       password: "",
     },
@@ -96,7 +98,20 @@ const LoginPage: React.FC = () => {
       const message =
         (err as AxiosError<{ message: string }>)?.response?.data?.message ??
         "Login failed. Please try again.";
-      toast.error(message);
+
+      const UnVerifedEmailMessage = "Email not verified";
+      if (message.toLowerCase().includes(UnVerifedEmailMessage.toLowerCase())) {
+        toast.error(
+          "Your email is not verified. Please verify your email before logging in.",
+        );
+        navigate(RoutePaths.RESEND_VERIFICATION, {
+          state: {
+            email: loginMethod === "email" ? data.email : undefined,
+          },
+        });
+      } else {
+        toast.error(message);
+      }
     }
   };
 
@@ -153,7 +168,7 @@ const LoginPage: React.FC = () => {
             <input type="hidden" {...register("loginMethod")} />
             <Form.Group controlId={`form.${loginMethod}`} className="mb-4">
               <Form.Label className="block text-text-muted text-xs uppercase tracking-wider mb-1.5">
-                {loginMethod === "email" ? "Emaild Address" : "Phone Number"}{" "}
+                {loginMethod === "email" ? "Email Address" : "Phone Number"}{" "}
                 <span className="text-expense">*</span>
               </Form.Label>
               {loginMethod === "email" ? (

@@ -19,7 +19,8 @@ const TransactionsPage = lazy(() => import("./pages/transactions"));
 const InsightsPage = lazy(() => import("./pages/insights"));
 const ProfilePage = lazy(() => import("./pages/profile"));
 const NotFoundPage = lazy(() => import("./pages/notFound"));
-
+const ResendEmailPage = lazy(() => import("./pages/resend-verification"));
+const VerifyEmailPage = lazy(() => import("./pages/verify-email"));
 const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -30,6 +31,14 @@ const App: React.FC = () => {
             <Route element={<AuthLayout />}>
               <Route path={RoutePaths.LOGIN} element={<LoginPage />} />
               <Route path={RoutePaths.REGISTER} element={<RegisterPage />} />
+              <Route
+                path={RoutePaths.RESEND_VERIFICATION}
+                element={<ResendEmailPage />}
+              />
+              <Route
+                path={RoutePaths.VERIFY_EMAIL}
+                element={<VerifyEmailPage />}
+              />
             </Route>
 
             <Route element={<ProtectedRoute />}>

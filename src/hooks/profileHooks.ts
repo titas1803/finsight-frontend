@@ -1,11 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { upddatePassword } from "../api/auth.api";
+import { updatePassword } from "../api/auth.api";
 import { UpdateProfile } from "../api/user.api";
 import type {
   UpdateProfilePayload,
   UpdatePasswordPayload,
 } from "../types/auth.types";
+import type { AxiosError } from "axios";
 
 export const useUpdateProfile = () => {
   return useMutation({
@@ -16,8 +17,8 @@ export const useUpdateProfile = () => {
 
 export const useUpdatePassword = () => {
   return useMutation({
-    mutationFn: (payload: UpdatePasswordPayload) => upddatePassword(payload),
-    onError: (err: any) => {
+    mutationFn: (payload: UpdatePasswordPayload) => updatePassword(payload),
+    onError: (err: AxiosError<{ message: string }>) => {
       const msg = err?.response?.data?.message ?? "Failed to update password";
       toast.error(msg);
     },

@@ -1,5 +1,6 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 import { AuthUrls } from "../constants/enums";
+import { UnVerifedEmailErrorMessage } from "@/constants/errorMessages";
 
 const baseURL = import.meta.env.FINSIGHT_API_URL;
 
@@ -55,6 +56,15 @@ api.interceptors.response.use(
 
   async (error) => {
     const original = error.config as RetryConfig;
+
+    if (
+      error.response?.data.message &&
+      error.response?.data.message
+        .toLowerCase()
+        .includes(UnVerifedEmailErrorMessage.toLowerCase())
+    ) {
+      return Promise.reject(error);
+    }
 
     if (!original) {
       return Promise.reject(error);
