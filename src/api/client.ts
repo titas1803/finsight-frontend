@@ -74,7 +74,10 @@ api.interceptors.response.use(
       original.url?.includes(AuthUrls.LOGIN) ||
       original.url?.includes(AuthUrls.REFRESHTOKEN) ||
       original.url?.includes(AuthUrls.REGISTER) ||
-      original.url?.includes(AuthUrls.LOGOUT);
+      original.url?.includes(AuthUrls.LOGOUT) ||
+      original.url?.includes(AuthUrls.VERIFYEMAIL) ||
+      original.url?.includes(AuthUrls.RESENDVERIFICATION);
+
     if (isAuthRoute) {
       return Promise.reject(error);
     }

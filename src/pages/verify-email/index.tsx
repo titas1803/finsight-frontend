@@ -5,6 +5,7 @@ import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { verifyEmail as verifyEmailApi } from "@/api/auth.api";
 import { RoutePaths } from "@/constants/routes";
 import { SectionSpinner } from "@/components/Common/Loading";
+
 const VerifyEmailPage: React.FC = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -19,7 +20,6 @@ const VerifyEmailPage: React.FC = () => {
           (err as AxiosError<{ message: string }>)?.response?.data?.message ??
           "An error occurred while verifying your email.";
         toast.error(message);
-        navigate(RoutePaths.LOGIN, { replace: true });
       }
     };
 
